@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\UniqueSluggifier;
 use App\Gender;
 use App\Season;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, UniqueSluggifier;
 
     protected $fillable = [
         'name',
@@ -27,7 +28,6 @@ class Product extends Model
         'season',
         'year',
         'usage_id',
-        'display_name',
         'image',
     ];
 

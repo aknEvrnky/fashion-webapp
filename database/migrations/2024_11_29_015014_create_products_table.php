@@ -27,9 +27,7 @@ return new class extends Migration
             $table->string('season');
             $table->unsignedInteger('year');
             $table->foreignIdFor(Usage::class)->constrained();
-            $table->string('display_name');
             $table->string('image');
-
             $table->softDeletes();
             $table->timestamps();
         });

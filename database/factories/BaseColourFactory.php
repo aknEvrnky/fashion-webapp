@@ -18,7 +18,6 @@ class BaseColourFactory extends Factory
     {
         return [
             'name' => $this->faker->colorName,
-            'hex' => $this->faker->hexColor,
         ];
     }
 }

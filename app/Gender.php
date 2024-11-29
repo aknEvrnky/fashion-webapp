@@ -4,9 +4,9 @@ namespace App;
 
 enum Gender: string
 {
-    case Men = 'men';
-    case Women = 'women';
-    case Unisex = 'unisex';
-    case Boys = 'boys';
-    case Girls = 'girls';
+    case Men = 'Men';
+    case Women = 'Women';
+    case Unisex = 'Unisex';
+    case Boys = 'Boys';
+    case Girls = 'Girls';
 }

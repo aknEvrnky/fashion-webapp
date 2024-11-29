@@ -4,8 +4,8 @@ namespace App;
 
 enum Season: string
 {
-    case Winter = 'winter';
-    case Spring = 'spring';
-    case Summer = 'summer';
-    case Autumn = 'autumn';
+    case Winter = 'Winter';
+    case Spring = 'Spring';
+    case Summer = 'Summer';
+    case Fall = 'Fall';
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\UniqueSluggifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SubCategory extends Model
 {
     /** @use HasFactory<\Database\Factories\SubCategoryFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, UniqueSluggifier;
 
     protected $fillable = ['master_category_id', 'name', 'slug', 'description'];
 

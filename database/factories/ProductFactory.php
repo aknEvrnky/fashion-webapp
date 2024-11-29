@@ -33,7 +33,6 @@ class ProductFactory extends Factory
             'season' => $this->faker->randomElement(Season::cases()),
             'year' => $this->faker->year,
             'usage_id' => Usage::factory(),
-            'display_name' => $this->faker->name,
             'image' => $this->faker->filePath(). '.jpg',
         ];
     }
