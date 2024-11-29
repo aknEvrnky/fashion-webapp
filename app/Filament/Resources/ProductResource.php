@@ -90,7 +90,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('season')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('year')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('usage.name')
                     ->numeric()
