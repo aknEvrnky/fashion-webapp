@@ -1,10 +1,10 @@
 <script setup>
 import { ref, reactive, nextTick } from 'vue';
 import DialogModal from './DialogModal.vue';
-import InputError from './InputError.vue';
-import PrimaryButton from './PrimaryButton.vue';
-import SecondaryButton from './SecondaryButton.vue';
-import TextInput from './TextInput.vue';
+import InputError from './Inputs/InputError.vue';
+import PrimaryButton from './Inputs/PrimaryButton.vue';
+import SecondaryButton from './Inputs/SecondaryButton.vue';
+import TextInput from './Inputs/TextInput.vue';
 
 const emit = defineEmits(['confirmed']);
 
