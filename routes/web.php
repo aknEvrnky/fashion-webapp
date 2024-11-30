@@ -1,12 +1,23 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MasterCategoryController;
+use App\Http\Controllers\Frontend\ArticleTypeController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\MasterCategoryController;
+use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', HomeController::class)->name('home');
+
+// categories
 Route::get('/master-categories', [MasterCategoryController::class, 'index'])->name('master-categories.index');
+Route::get('/master-categories/{masterCategory:slug}', [MasterCategoryController::class, 'show'])->name('master-categories.show');
+
+Route::get('/master-categories/{masterCategory:slug}/sub-categories/{subCategory:slug}', [SubCategoryController::class, 'show'])->name('sub-categories.show');
+Route::get('/master-categories/{masterCategory:slug}/sub-categories/{subCategory:slug}/article-types/{articleType:slug}', [ArticleTypeController::class, 'show'])->name('article-types.show');
+
+Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::middleware([
     'auth:sanctum',

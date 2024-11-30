@@ -19,4 +19,9 @@ class MasterCategory extends Model
     {
         return $this->hasMany(SubCategory::class);
     }
+
+    public function url(): string
+    {
+        return route('master-categories.show', $this);
+    }
 }

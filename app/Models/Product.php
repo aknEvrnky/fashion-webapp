@@ -31,6 +31,11 @@ class Product extends Model
         'image',
     ];
 
+    protected $with = [
+        'baseColour',
+        'usage'
+    ];
+
     protected function casts(): array
     {
         return [
@@ -57,6 +62,5 @@ class Product extends Model
     public function imageUrl(): string
     {
         return Storage::url($this->image);
-
     }
 }
