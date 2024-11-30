@@ -32,7 +32,7 @@ class ArticleTypeResource extends Resource
             'links' => [
                 'self' => $this->url()
             ],
-            'includes' => $this->when($this->includeRelationships, ProductResource::collection($this->products))
+            'includes' => $this->when($this->includeRelationships, ProductResource::collection($this->whenLoaded('products')))
         ];
     }
 }

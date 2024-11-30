@@ -32,7 +32,7 @@ class SubCategoryResource extends Resource
             'links' => [
                 'self' => $this->url()
             ],
-            'includes' => $this->when($this->includeRelationships, ArticleTypeResource::collection($this->articleTypes))
+            'includes' => $this->when($this->includeRelationships, ArticleTypeResource::collection($this->whenLoaded('articleTypes')))
         ];
     }
 }

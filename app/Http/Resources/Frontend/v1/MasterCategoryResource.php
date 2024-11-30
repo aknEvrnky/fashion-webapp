@@ -32,7 +32,7 @@ class MasterCategoryResource extends Resource
             'links' => [
                 'self' => $this->url()
             ],
-            'includes' => $this->when($this->includeRelationships, SubCategoryResource::collection($this->subCategories))
+            'includes' => $this->when($this->includeRelationships, SubCategoryResource::collection($this->whenLoaded('subCategories')))
         ];
     }
 }
