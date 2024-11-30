@@ -14,8 +14,8 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/master-categories', [MasterCategoryController::class, 'index'])->name('master-categories.index');
 Route::get('/master-categories/{masterCategory:slug}', [MasterCategoryController::class, 'show'])->name('master-categories.show');
 
-Route::get('/master-categories/{masterCategory:slug}/sub-categories/{subCategory:slug}', [SubCategoryController::class, 'show'])->name('sub-categories.show');
-Route::get('/master-categories/{masterCategory:slug}/sub-categories/{subCategory:slug}/article-types/{articleType:slug}', [ArticleTypeController::class, 'show'])->name('article-types.show');
+Route::get('/sub-categories/{subCategory:slug}', [SubCategoryController::class, 'show'])->name('sub-categories.show');
+Route::get('/article-types/{articleType:slug}', [ArticleTypeController::class, 'show'])->name('article-types.show');
 
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 

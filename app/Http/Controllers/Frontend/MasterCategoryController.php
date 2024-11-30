@@ -21,7 +21,9 @@ class MasterCategoryController extends Controller
 
     public function show(Request $request, MasterCategory $masterCategory)
     {
-        $subCategories = SubCategory::paginate();
+        $subCategories = $masterCategory->subCategories()
+            ->with('masterCategory')
+            ->paginate();
 
         return Inertia::render('MasterCategory/Show', [
             'masterCategory' => MasterCategoryResource::make($masterCategory),

@@ -28,10 +28,6 @@ class ArticleType extends Model
 
     public function url(): string
     {
-        return route('article-types.show', [
-            $this->subCategory->masterCategory,
-            $this->subCategory,
-            $this
-        ]);
+        return route('article-types.show', $this);
     }
 }

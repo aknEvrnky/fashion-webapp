@@ -28,6 +28,6 @@ class SubCategory extends Model
 
     public function url(): string
     {
-        return route('sub-categories.show', ['masterCategory' =>$this->masterCategory, 'subCategory' => $this]);
+        return route('sub-categories.show', $this);
     }
 }
