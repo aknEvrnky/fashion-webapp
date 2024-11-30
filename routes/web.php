@@ -17,6 +17,7 @@ Route::get('/master-categories/{masterCategory:slug}', [MasterCategoryController
 Route::get('/sub-categories/{subCategory:slug}', [SubCategoryController::class, 'show'])->name('sub-categories.show');
 Route::get('/article-types/{articleType:slug}', [ArticleTypeController::class, 'show'])->name('article-types.show');
 
+// products
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::middleware([
