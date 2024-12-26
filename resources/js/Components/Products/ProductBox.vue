@@ -25,7 +25,7 @@ export default {
 <template>
 
 
-    <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow py-3 flex flex-col justify-between">
+    <div class="w-full bg-white border border-gray-200 rounded-lg shadow py-3 flex flex-col justify-between">
         <Link :href="route('products.show', product.id)">
             <img class="p-8 rounded-t-lg" :src="product.attributes.imageUrl" alt="product image" />
         </Link>

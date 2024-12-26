@@ -26,7 +26,7 @@ export default {
 
     <div class="container mx-auto py-6">
         <h1 class="text-2xl font-black text-center mb-8">{{ articleType.data.attributes.title }}</h1>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <ProductBox v-for="product in products.data" :key="product.id" :product="product" />
         </div>
     </div>
