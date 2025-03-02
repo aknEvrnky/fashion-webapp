@@ -55,6 +55,11 @@ class User extends Authenticatable implements FilamentUser
         'profile_photo_url',
     ];
 
+    public function isAdmin(): bool
+    {
+        return str_contains($this->email, '@akinevrenkaya.com');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
