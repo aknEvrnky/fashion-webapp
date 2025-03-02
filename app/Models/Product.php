@@ -21,6 +21,7 @@ class Product extends Model
         'slug',
         'description',
         'price',
+        'brand_id',
         'stock',
         'gender',
         'article_type_id',
@@ -62,5 +63,10 @@ class Product extends Model
     public function imageUrl(): string
     {
         return Storage::url($this->image);
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
     }
 }
