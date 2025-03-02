@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Gender;
+use App\Models\MasterCategory;
 use App\Models\Product;
+use App\Models\SubCategory;
 use App\Season;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -25,43 +27,96 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->prefix('$'),
-                Forms\Components\TextInput::make('stock')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('gender')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('article_type_id')
-                    ->relationship('articleType', 'name')
-                    ->required(),
-                Forms\Components\Select::make('base_colour_id')
-                    ->relationship('baseColour', 'name')
-                    ->required(),
-                Forms\Components\TextInput::make('season')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('year')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Select::make('usage_id')
-                    ->relationship('usage', 'name')
-                    ->required(),
-                Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->required(),
+                Forms\Components\Tabs::make('Tabs')
+                    ->columns()
+                    ->columnSpanFull()
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('Product Information')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('slug')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\Textarea::make('description')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\FileUpload::make('image')
+                                    ->image()
+                                    ->required(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Retail Information')
+                            ->schema([
+                                Forms\Components\TextInput::make('price')
+                                    ->hint('in Cents')
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('¢'),
+                                Forms\Components\TextInput::make('stock')
+                                    ->required()
+                                    ->numeric(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Attributes')
+                            ->schema([
+                                Forms\Components\Section::make('Category Information')
+                                    ->columns(2)
+                                    ->schema([
+                                        Forms\Components\Select::make('master_category_id')
+                                            ->label('Master Category')
+                                            ->live()
+                                            ->searchable()
+                                            ->afterStateUpdated(function (Forms\Set $set) {
+                                                $set('sub_category_id', null);
+                                                $set('article_type_id', null);
+                                            })
+                                            ->preload()
+                                            ->options(MasterCategory::pluck('name', 'id'))
+                                            ->required(),
+                                        Forms\Components\Select::make('sub_category_id')
+                                            ->label('Sub Category')
+                                            ->live()
+                                            ->searchable()
+                                            ->afterStateUpdated(function (Forms\Set $set) {
+                                                $set('article_type_id', null);
+                                            })
+                                            ->preload()
+                                            ->options(fn(Forms\Get $get) => SubCategory::where('master_category_id', $get('master_category_id'))->pluck('name', 'id'))
+                                            ->required(),
+
+                                        Forms\Components\Select::make('article_type_id')
+                                            ->live()
+                                            ->searchable()
+                                            ->preload()
+                                            ->relationship('articleType', 'name', fn(Builder $query, Forms\Get $get) => $query->where('sub_category_id', $get('sub_category_id')))
+                                            ->required(),
+                                    ]),
+                                Forms\Components\Select::make('brand_id')
+                                    ->searchable()
+                                    ->relationship('brand', 'title')
+                                    ->required(),
+                                Forms\Components\Select::make('gender')
+                                    ->searchable()
+                                    ->options(Gender::class)
+                                    ->required(),
+                                Forms\Components\Select::make('base_colour_id')
+                                    ->searchable()
+                                    ->relationship('baseColour', 'name')
+                                    ->required(),
+                                Forms\Components\Select::make('season')
+                                    ->searchable()
+                                    ->options(Season::class)
+                                    ->required(),
+                                Forms\Components\Select::make('year')
+                                    ->options(collect(range(2005, (int)date('Y')))->mapWithKeys(fn(int $year) => [$year => $year]))
+                                    ->required(),
+                                Forms\Components\Select::make('usage_id')
+                                    ->searchable()
+                                    ->relationship('usage', 'name')
+                                    ->required(),
+                            ]),
+                    ]),
+
             ]);
     }
 
@@ -74,7 +129,7 @@ class ProductResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->money(divideBy: 100)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stock')
                     ->numeric()
@@ -119,6 +174,9 @@ class ProductResource extends Resource
                     ->relationship('baseColour', 'name')
                     ->preload()
                     ->multiple(),
+                Tables\Filters\SelectFilter::make('brand')
+                    ->relationship('brand', 'title')
+                    ->multiple(),
                 Tables\Filters\SelectFilter::make('season')
                     ->options(Season::class),
 
@@ -148,5 +206,10 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return Product::query()->with('articleType.subCategory.masterCategory');
     }
 }

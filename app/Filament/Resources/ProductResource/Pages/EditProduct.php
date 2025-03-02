@@ -16,4 +16,13 @@ class EditProduct extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['master_category_id'] = $this->record->articleType->subCategory->master_category_id;
+        $data['sub_category_id'] = $this->record->articleType->sub_category_id;
+
+        return $data;
+    }
+
 }
