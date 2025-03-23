@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'gorse' => [
+        'host' => env('GORSE_HOST', 'http://localhost:8080'),
+        'api_key' => env('GORSE_API_KEY', ''),
+    ],
 ];
