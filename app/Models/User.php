@@ -77,4 +77,10 @@ class User extends Authenticatable implements FilamentUser
     {
         return true;
     }
+
+    public function getLabels(): array
+    {
+        // todo: add user labels in the future
+        return [];
+    }
 }

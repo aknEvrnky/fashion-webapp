@@ -69,4 +69,30 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function getLabels(): array
+    {
+        return [
+            $this->brand->title,
+            $this->season->value,
+            $this->usage->name,
+            $this->gender->value,
+            $this->baseColour->name,
+        ];
+    }
+
+    public function getCategories(): array
+    {
+        return [
+            $this->articleType->subCategory->masterCategory->name,
+            $this->articleType->subCategory->name,
+            $this->articleType->name,
+        ];
+    }
+
+    public function isHidden(): bool
+    {
+        // todo: update here
+        return false;
+    }
 }
