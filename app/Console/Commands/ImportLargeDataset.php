@@ -118,10 +118,13 @@ class ImportLargeDataset extends Command
         $season = $data['season'] ? Season::from($data['season']) : fake()->randomElement(Season::cases());
         $year = $data['year'] ?: date('Y');
 
+        $description = strip_tags($data['productDescriptors']['description']['value'] ?? null);
+        $description = str($description)->ascii()->limit(65000);
+
         $productData = [
             'name' => $data['productDisplayName'],
             'slug' => Str::slug($data['productDisplayName']),
-            'description' => strip_tags($data['productDescriptors']['description']['value'] ?? null),
+            'description' => $description,
             'price' => $data['price'],
             'brand_id' => $brand->id,
             'gender' => Gender::from($data['gender']),
