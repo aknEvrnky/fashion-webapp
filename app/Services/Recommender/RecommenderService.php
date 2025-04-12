@@ -19,31 +19,25 @@ class RecommenderService
 
     /**
      * @param Collection<int, User> $users
-     * @param int $chunkSize
-     * @return void
      */
-    public function sendUsers(Collection $users, int $chunkSize = 100): void
+    public function sendUsers(Collection $users): void
     {
-        $userChunks = $users->map(function (User $user) {
+        $users = $users->map(function (User $user) {
             return new GorseUser(
                 userId: $user->id,
                 labels: $user->getLabels(),
             );
-        })->chunk($chunkSize);
+        });
 
-        foreach ($userChunks as $userChunk) {
-            $this->client->insertUsers($userChunk);
-        }
+        $this->client->insertUsers($users);
     }
 
     /**
      * @param Collection<int, Product> $products
-     * @param int $chunkSize
-     * @return void
      */
-    public function sendProducts(Collection $products, int $chunkSize = 100): void
+    public function sendProducts(Collection $products): void
     {
-        $userChunks = $products->map(function (Product $product) {
+        $products = $products->map(function (Product $product) {
             return new Item(
                 item_id: $product->id,
                 categories: $product->getCategories(),
@@ -52,11 +46,9 @@ class RecommenderService
                 comment: $product->description,
                 timestamp: $product->created_at->toISOString(),
             );
-        })->chunk($chunkSize);
+        });
 
-        foreach ($userChunks as $userChunk) {
-            $this->client->insertItems($userChunk);
-        }
+        $this->client->insertItems($products);
     }
 
     public function sendFeedback(string $userId, FeedbackType $feedbackType, string $productId, ?Carbon $dateTime = null): void
