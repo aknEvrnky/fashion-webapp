@@ -54,11 +54,12 @@ class Gorse
     }
 
     /**
+     * @param array<int, Feedback> $feedbacks
      * @throws GuzzleException
      */
-    function insertFeedback(array $feedback): RowAffected
+    function insertFeedback(array $feedbacks): RowAffected
     {
-        return RowAffected::fromJSON($this->request('POST', '/api/feedback/', $feedback));
+        return RowAffected::fromJSON($this->request('POST', '/api/feedback/', $feedbacks));
     }
 
     /**

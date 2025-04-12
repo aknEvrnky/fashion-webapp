@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Recommender;
+namespace App\Services\Feedback;
 
 /**
  * Feedback represents events that happened between users and items, which can be positive or negative. For example,

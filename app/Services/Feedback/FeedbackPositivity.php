@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Recommender;
+namespace App\Services\Feedback;
 
 enum FeedbackPositivity: string
 {
