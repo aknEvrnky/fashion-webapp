@@ -11,4 +11,5 @@ Route::get('/user', function (Request $request) {
 
 Route::post('feedback', [FeedbackController::class, 'store']);
 
+Route::get('products/{product}', [ProductController::class, 'show']);
 Route::get('products', [ProductController::class, 'index']);
