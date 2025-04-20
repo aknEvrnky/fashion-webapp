@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "ext-zip": "*",
+        "dedoc/scramble": "^0.12.18",
         "filament/filament": "^3.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^v12.9.2",
