@@ -4,10 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class BindUserRecommenderId
+class UseSanctumGuard
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,7 @@ class BindUserRecommenderId
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
-            if (!$request->hasHeader('X-Recommender-Id')) {
-                $request->headers->set('X-Recommender-Id', Str::uuid()->toString());
-            }
-        }
+        Auth::shouldUse('sanctum');
 
         return $next($request);
     }

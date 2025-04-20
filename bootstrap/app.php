@@ -15,15 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(
             append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+                \App\Http\Middleware\HandleInertiaRequests::class,
+                \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             ],
             prepend: [
                 \App\Http\Middleware\BindUserRecommenderId::class,
+                \App\Http\Middleware\UseSanctumGuard::class,
             ],
         );
-
-        //
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->job(new \App\Jobs\PersistFeedbacks)->hourly();
