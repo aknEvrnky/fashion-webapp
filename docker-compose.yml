@@ -1,0 +1,52 @@
+services:
+    fashion.localhost:
+        build:
+            context: './docker/8.3'
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: 'fashion/app'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - fashion_network
+        depends_on:
+            - redis
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.fashion.rule=Host(`${APP_HOST}`)"
+            - "traefik.http.routers.fashion.entrypoints=web"
+            - "traefik.http.routers.fashion.service=fashion"
+            - "traefik.http.services.fashion.loadbalancer.server.port=80"
+            - "traefik.http.services.fashion.loadbalancer.server.scheme=http"
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - fashion_network
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+        labels:
+            - "traefik.enable=false"
+networks:
+    fashion_network:
+        external: true
+volumes:
+    sail-redis:
+        driver: local
