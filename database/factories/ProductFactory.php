@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Gender;
+use App\Enums\Gender;
+use App\Enums\Season;
 use App\Models\ArticleType;
 use App\Models\BaseColour;
 use App\Models\Usage;
-use App\Season;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

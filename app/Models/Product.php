@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Concerns\UniqueSluggifier;
-use App\Gender;
-use App\Season;
+use App\Enums\Gender;
+use App\Enums\Season;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

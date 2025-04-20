@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Gender;
+use App\Enums\Gender;
+use App\Enums\Season;
 use App\Models\ArticleType;
 use App\Models\BaseColour;
 use App\Models\Brand;
@@ -10,10 +11,9 @@ use App\Models\MasterCategory;
 use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\Usage;
-use App\Season;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class ImportLargeDataset extends Command
 {

@@ -2,20 +2,19 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Gender;
+use App\Enums\Season;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Gender;
 use App\Models\MasterCategory;
 use App\Models\Product;
 use App\Models\SubCategory;
-use App\Season;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {

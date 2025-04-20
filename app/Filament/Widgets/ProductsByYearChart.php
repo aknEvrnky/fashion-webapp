@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use App\Gender;
 use App\Models\Product;
 use Filament\Widgets\ChartWidget;
 
