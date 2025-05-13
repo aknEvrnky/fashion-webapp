@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 export default defineConfig({
     plugins: [
         laravel({
-            input: 'resources/js/app.js',
+            input: 'resources/js/app.jsx',
             refresh: true,
         }),
         react(),
