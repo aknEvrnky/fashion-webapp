@@ -7,6 +7,7 @@ use App\Gorse\Item;
 use App\Gorse\User as GorseUser;
 use App\Models\Product;
 use App\Models\User;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 
 class RecommenderService
@@ -47,5 +48,31 @@ class RecommenderService
         });
 
         $this->client->insertItems($products);
+    }
+
+    /**
+     * @return Collection<Product>
+     * @throws GuzzleException
+     */
+    public function latestProducts(int $limit, ?int $userId = null): Collection
+    {
+        $products = $this->client->latestProducts($limit, $userId);
+
+        $productIds = collect($products)->pluck('Id');
+
+        return Product::query()->whereIn('id', $productIds)->get();
+    }
+
+    /**
+     * @return Collection<Product>
+     * @throws GuzzleException
+     */
+    public function popularProducts(int $limit, ?int $userId = null): Collection
+    {
+        $products = $this->client->popularProducts($limit, $userId);
+
+        $productIds = collect($products)->pluck('Id');
+
+        return Product::query()->whereIn('id', $productIds)->get();
     }
 }

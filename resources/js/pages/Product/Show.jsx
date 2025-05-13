@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { ShopContext } from '../context/ShopContext'
-import { assets } from '../assets/assets'
-import RelatedProducts from '../components/RelatedProducts'
-import AppLayout from '../layouts/AppLayout'
+import { ShopContext } from '../../context/ShopContext.jsx'
+import { assets } from '@/assets/assets.js'
+import RelatedProducts from '../../components/RelatedProducts.jsx'
+import AppLayout from '../../layouts/AppLayout.jsx'
 
-const Product = (props) => {
+const Show = (props) => {
   const { productId } = props
   const { products, currency, addToCart } = useContext(ShopContext)
   const [productData, setProductData] = useState(false)
@@ -106,4 +106,4 @@ const Product = (props) => {
   )
 }
 
-export default Product
+export default Show

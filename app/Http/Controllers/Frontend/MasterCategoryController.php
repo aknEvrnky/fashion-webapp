@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Frontend\v1\MasterCategoryResource;
-use App\Http\Resources\Frontend\v1\SubCategoryResource;
+use App\Http\Resources\Frontend\MasterCategoryResource;
+use App\Http\Resources\Frontend\SubCategoryResource;
 use App\Models\MasterCategory;
-use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

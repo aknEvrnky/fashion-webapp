@@ -93,4 +93,38 @@ class Gorse
     {
         return RowAffected::fromJSON($this->request('POST', '/api/items/', $items));
     }
+
+    /**
+     * @return array<array{Id: string, Result: integer}>
+     * @throws GuzzleException
+     */
+    public function latestProducts(int $n = 10, ?int $userId = null): array
+    {
+        $query = [
+            'n' => $n,
+        ];
+
+        if ($userId) {
+            $query['user_id'] = $userId;
+        }
+
+        return $this->request('GET', '/api/latest/', $query);
+    }
+
+    /**
+     * @return array<array{Id: string, Result: integer}>
+     * @throws GuzzleException
+     */
+    public function popularProducts(int $n = 5, ?int $userId = null): array
+    {
+        $query = [
+            'n' => $n,
+        ];
+
+        if ($userId) {
+            $query['user_id'] = $userId;
+        }
+
+        return $this->request('GET', '/api/popular/', $query);
+    }
 }

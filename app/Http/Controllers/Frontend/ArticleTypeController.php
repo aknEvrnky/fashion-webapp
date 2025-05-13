@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Frontend\v1\ArticleTypeResource;
-use App\Http\Resources\Frontend\v1\ProductResource;
+use App\Http\Resources\Frontend\ArticleTypeResource;
+use App\Http\Resources\Frontend\ProductResource;
 use App\Models\ArticleType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
