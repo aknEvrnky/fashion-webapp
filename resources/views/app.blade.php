@@ -12,8 +12,8 @@
 
         <!-- Scripts -->
         @routes
-        @viteReactRefresh 
-        @vite(['resources/js/app.jsx', "resources/js/pages/{$page['component']}.jsx"])
+        @viteReactRefresh
+        @vite(['resources/js/app.jsx'])
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
