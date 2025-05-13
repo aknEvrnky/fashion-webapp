@@ -4,7 +4,7 @@ import { LatestCollection } from '../components/LatestCollection'
 import BestSeller from '../components/BestSeller'
 import OurPolicy from '../components/OurPolicy'
 import NewsletterBox from '../components/NewsletterBox'
-import AppLayout from '../Layouts/AppLayout'
+import AppLayout from '../layouts/AppLayout'
 
 export const Home = () => {
   return (
@@ -13,7 +13,7 @@ export const Home = () => {
         <LatestCollection/>
         <BestSeller/>
         <OurPolicy/>
-        <NewsletterBox/>    
+        <NewsletterBox/>
     </AppLayout>
   )
 }

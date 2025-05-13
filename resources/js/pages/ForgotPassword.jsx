@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AppLayout from '../Layouts/AppLayout';
+import AppLayout from '../layouts/AppLayout';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

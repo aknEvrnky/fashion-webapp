@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-import AppLayout from '../Layouts/AppLayout';
+import AppLayout from '../layouts/AppLayout';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Sign In');

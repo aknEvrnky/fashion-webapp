@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import { assets } from '../assets/assets'
 import RelatedProducts from '../components/RelatedProducts'
-import AppLayout from '../Layouts/AppLayout'
+import AppLayout from '../layouts/AppLayout'
 
 const Product = (props) => {
   const { productId } = props
