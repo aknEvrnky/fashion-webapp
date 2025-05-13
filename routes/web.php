@@ -6,6 +6,7 @@ use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\MasterCategoryController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\RecommendationController;
 use App\Http\Controllers\Frontend\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,6 +15,7 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('/about', AboutController::class)->name('about');
 Route::get('/contact', ContactController::class)->name('contact');
+Route::get('/recommendation', RecommendationController::class)->name('recommendation');
 
 // categories
 Route::get('/master-categories', [MasterCategoryController::class, 'index'])->name('master-categories.index');
