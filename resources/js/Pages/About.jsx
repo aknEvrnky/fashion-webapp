@@ -1,11 +1,12 @@
 import React from 'react';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
+import AppLayout from "@/Layouts/AppLayout.jsx";
 
 const About = () => {
   return (
-    <div>
-      <div className='text-2xl text-center pt-8 border-t'> 
+    <AppLayout>
+      <div className='text-2xl text-center pt-8 border-t'>
         <Title text1={'ABOUT'} text2={'US'} />
       </div>
 
@@ -36,8 +37,8 @@ const About = () => {
           <b>A Brand that Sees You</b>
           <p className='text-gray-600'>We design for all — no rules, no stereotypes. Tric is here to support your individuality, every step of the way.</p>
         </div>
-      </div>    
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 

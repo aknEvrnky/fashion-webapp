@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ArticleTypeController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\MasterCategoryController;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/about', AboutController::class)->name('about');
 
 // categories
 Route::get('/master-categories', [MasterCategoryController::class, 'index'])->name('master-categories.index');
