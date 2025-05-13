@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ArticleTypeController;
+use App\Http\Controllers\Frontend\CollectionController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\MasterCategoryController;
@@ -16,6 +17,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/about', AboutController::class)->name('about');
 Route::get('/contact', ContactController::class)->name('contact');
 Route::get('/recommendation', RecommendationController::class)->name('recommendation');
+Route::get('/collection', CollectionController::class)->name('collection');
 
 // categories
 Route::get('/master-categories', [MasterCategoryController::class, 'index'])->name('master-categories.index');
