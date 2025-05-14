@@ -108,7 +108,9 @@ class Gorse
             $query['user_id'] = $userId;
         }
 
-        return $this->request('GET', '/api/latest/', $query);
+        return $this->request('GET', '/api/latest/', [
+            'query' => $query,
+        ]);
     }
 
     /**
@@ -125,6 +127,8 @@ class Gorse
             $query['user_id'] = $userId;
         }
 
-        return $this->request('GET', '/api/popular/', $query);
+        return $this->request('GET', '/api/popular/', [
+            'query' => $query,
+        ]);
     }
 }
