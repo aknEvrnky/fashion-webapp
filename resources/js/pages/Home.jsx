@@ -5,7 +5,7 @@ import BestSeller from '../components/BestSeller'
 import OurPolicy from '../components/OurPolicy'
 import NewsletterBox from '../components/NewsletterBox'
 import AppLayout from '../layouts/AppLayout'
-import {usePage} from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 
 export const Home = () => {
     const latestProducts = usePage().props.latestProducts.data;
@@ -13,6 +13,8 @@ export const Home = () => {
 
   return (
     <AppLayout>
+      <Head title='Fashion Tric - Home Page'/>
+
         <Hero />
         <LatestCollection latestProducts={latestProducts} />
         <BestSeller bestProducts={popularProducts} />

@@ -54,11 +54,13 @@ class RecommenderService
      * @return Collection<Product>
      * @throws GuzzleException
      */
-    public function latestProducts(int $limit, ?int $userId = null): Collection
+    public function latestProducts(int $limit, ?int $userId = null, ?string $category = null): Collection
     {
-        $products = $this->client->latestProducts($limit, $userId);
+        $products = $category
+            ? $this->client->latestProductsByCategory($category, $limit, $userId)
+            : $this->client->latestProducts($limit, $userId);
 
-        $productIds = collect($products)->pluck('Id');
+            $productIds = collect($products)->pluck('Id');
 
         return Product::query()->whereIn('id', $productIds)->get();
     }
@@ -67,9 +69,11 @@ class RecommenderService
      * @return Collection<Product>
      * @throws GuzzleException
      */
-    public function popularProducts(int $limit, ?int $userId = null): Collection
+    public function popularProducts(int $limit, ?int $userId = null, ?string $category = null): Collection
     {
-        $products = $this->client->popularProducts($limit, $userId);
+        $products = $category
+            ? $this->client->popularProductsByCategory($category, $limit, $userId)
+            : $this->client->popularProducts($limit, $userId);
 
         $productIds = collect($products)->pluck('Id');
 

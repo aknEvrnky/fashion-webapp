@@ -103,6 +103,22 @@ class Gorse
 
         return $this->client->get('/api/latest', $query)->json();
     }
+    /**
+     * @return array<array{Id: string, Result: integer}>
+     * @throws GuzzleException
+     */
+    public function latestProductsByCategory(string $category, int $n = 10, ?int $userId = null): array
+    {
+        $query = [
+            'n' => $n,
+        ];
+
+        if ($userId) {
+            $query['user_id'] = $userId;
+        }
+
+        return $this->client->get('/api/latest/'. $category, $query)->json();
+    }
 
     /**
      * @return array<array{Id: string, Result: integer}>
@@ -119,5 +135,22 @@ class Gorse
         }
 
         return $this->client->get('/api/popular', $query)->json();
+    }
+
+    /**
+     * @return array<array{Id: string, Result: integer}>
+     * @throws GuzzleException
+     */
+    public function popularProductsByCategory(string $category, int $n = 5, ?int $userId = null): array
+    {
+        $query = [
+            'n' => $n,
+        ];
+
+        if ($userId) {
+            $query['user_id'] = $userId;
+        }
+
+        return $this->client->get('/api/popular/'. $category, $query)->json();
     }
 }
