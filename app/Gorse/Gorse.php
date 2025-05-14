@@ -2,20 +2,18 @@
 
 namespace App\Gorse;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\RequestOptions;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 
 class Gorse
 {
-    private string $endpoint;
-    private string $apiKey;
+    private PendingRequest $client;
 
     function __construct(string $endpoint, string $apiKey)
     {
-        $this->endpoint = $endpoint;
-        $this->apiKey = $apiKey;
+        $this->client = Http::baseUrl($endpoint)->withHeader('X-API-Key', $apiKey);
     }
 
     /**
@@ -23,7 +21,8 @@ class Gorse
      */
     function insertUser(User $user): RowAffected
     {
-        return RowAffected::fromJSON($this->request('POST', '/api/user/', $user));
+        $response = $this->client->post('/api/user/', $user);
+        return RowAffected::fromJSON($response->object());
     }
 
     /**
@@ -34,7 +33,9 @@ class Gorse
      */
     function insertUsers(Collection $users): RowAffected
     {
-        return RowAffected::fromJSON($this->request('POST', '/api/users/', $users));
+        $response = $this->client->post('/api/users/', $users);
+
+        return RowAffected::fromJSON($response->object());
     }
 
     /**
@@ -42,7 +43,8 @@ class Gorse
      */
     function getUser(string $user_id): User
     {
-        return User::fromJSON($this->request('GET', '/api/user/' . $user_id, null));
+        $response = $this->client->get('/api/user/' . $user_id);
+        return User::fromJSON($response->object());
     }
 
     /**
@@ -50,7 +52,8 @@ class Gorse
      */
     function deleteUser(string $user_id): RowAffected
     {
-        return RowAffected::fromJSON($this->request('DELETE', '/api/user/' . $user_id, null));
+        $response = $this->client->delete('/api/user/' . $user_id);
+        return RowAffected::fromJSON($response->object());
     }
 
     /**
@@ -59,7 +62,8 @@ class Gorse
      */
     function insertFeedback(array $feedbacks): RowAffected
     {
-        return RowAffected::fromJSON($this->request('POST', '/api/feedback/', $feedbacks));
+        $response = $this->client->post('/api/feedback/', $feedbacks);
+        return RowAffected::fromJSON($response->object());
     }
 
     /**
@@ -67,31 +71,20 @@ class Gorse
      */
     function getRecommend(string $user_id): array
     {
-        return $this->request('GET', '/api/recommend/' . $user_id, null);
-    }
-
-    /**
-     * @throws GuzzleException
-     */
-    private function request(string $method, string $uri, $body)
-    {
-        $client = new Client(['base_uri' => $this->endpoint]);
-        $options = [RequestOptions::HEADERS => ['X-API-Key' => $this->apiKey]];
-        if ($body != null) {
-            $options[RequestOptions::JSON] = $body;
-        }
-        $response = $client->request($method, $uri, $options);
-        return json_decode($response->getBody());
+        $response = $this->client->get('/api/recommend/' . $user_id);
+        return $response->json();
     }
 
     public function insertItem(Item $item): RowAffected
     {
-        return RowAffected::fromJSON($this->request('POST', '/api/item/', $item));
+        $response = $this->client->post('/api/item/', $item);
+        return RowAffected::fromJSON($response->object());
     }
 
     public function insertItems(Collection $items): RowAffected
     {
-        return RowAffected::fromJSON($this->request('POST', '/api/items/', $items));
+        $response = $this->client->post('/api/items/', $items);
+        return RowAffected::fromJSON($response->object());
     }
 
     /**
@@ -108,9 +101,7 @@ class Gorse
             $query['user_id'] = $userId;
         }
 
-        return $this->request('GET', '/api/latest/', [
-            'query' => $query,
-        ]);
+        return $this->client->get('/api/latest', $query)->json();
     }
 
     /**
@@ -127,8 +118,6 @@ class Gorse
             $query['user_id'] = $userId;
         }
 
-        return $this->request('GET', '/api/popular/', [
-            'query' => $query,
-        ]);
+        return $this->client->get('/api/popular', $query)->json();
     }
 }

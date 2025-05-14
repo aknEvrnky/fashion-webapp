@@ -22,9 +22,6 @@ class HomeController extends Controller
         $latestProducts = $recommenderService->latestProducts(10, $userId);
         $popularProducts = $recommenderService->popularProducts(5, $userId);
 
-        // todo: api 10 tane donuyor, bug olabilir.
-        $popularProducts = $popularProducts->take(5);
-
         $latestProducts = ProductResource::collection($latestProducts);
         $popularProducts = ProductResource::collection($popularProducts);
         $masterCategories = MasterCategoryResource::collection(MasterCategory::query()->get());
