@@ -33,6 +33,12 @@ const Collection = () => {
   const [colorSearchTerm, setColorSearchTerm] = useState('');
   const [showAllColors, setShowAllColors] = useState(false);
 
+  const [articleTypeOptions, setArticleTypeOptions] = useState([]);
+  const [selectedArticleTypeId, setSelectedArticleTypeId] = useState(null);
+  const [isLoadingArticleTypes, setIsLoadingArticleTypes] = useState(false);
+  const [articleTypeSearchTerm, setArticleTypeSearchTerm] = useState('');
+  const [showAllArticleTypes, setShowAllArticleTypes] = useState(false);
+
   useEffect(() => {
     setFilterProducts(products)
   }, [products])
@@ -43,6 +49,8 @@ const Collection = () => {
       setSelectedSubCategoryId(null);
       setSubCategorySearchTerm('');
       setShowAllSubCategories(false);
+      setArticleTypeOptions([]);
+      setSelectedArticleTypeId(null);
       ProductService.fetchSubCategories(selectedMasterCategory)
         .then(response => {
           setSubCategoryOptions(response.data || []);
@@ -58,19 +66,46 @@ const Collection = () => {
       setSubCategoryOptions([]);
       setSelectedSubCategoryId(null);
       setSubCategorySearchTerm('');
+      setArticleTypeOptions([]);
+      setSelectedArticleTypeId(null);
     }
   }, [selectedMasterCategory]);
+
+  useEffect(() => {
+    if (selectedSubCategoryId) {
+      setIsLoadingArticleTypes(true);
+      setSelectedArticleTypeId(null);
+      setArticleTypeSearchTerm('');
+      setShowAllArticleTypes(false);
+      ProductService.fetchArticleTypes(selectedSubCategoryId)
+        .then(response => {
+          setArticleTypeOptions(response.data || []);
+        })
+        .catch(error => {
+          console.error("Error fetching article types:", error);
+          setArticleTypeOptions([]);
+        })
+        .finally(() => {
+          setIsLoadingArticleTypes(false);
+        });
+    } else {
+      setArticleTypeOptions([]);
+      setSelectedArticleTypeId(null);
+      setArticleTypeSearchTerm('');
+    }
+  }, [selectedSubCategoryId]);
 
   useEffect(() => {
     const genderFilter = category ? category : null;
     const masterCategoryFilter = selectedMasterCategory ? parseInt(selectedMasterCategory, 10) : null;
     const subCategoryFilter = selectedSubCategoryId ? parseInt(selectedSubCategoryId, 10) : null;
+    const articleTypeFilter = selectedArticleTypeId ? parseInt(selectedArticleTypeId, 10) : null;
 
-    ProductService.fetchProducts(currentPage, 20, genderFilter, color, masterCategoryFilter, subCategoryFilter)
+    ProductService.fetchProducts(currentPage, 20, genderFilter, color, masterCategoryFilter, subCategoryFilter, articleTypeFilter)
       .then(response => {
         setApiProductCollection(response.data);
         setPaginationMeta(response.meta);
-        console.log(`Fetched products with gender: ${genderFilter}, colors: [${color.join(', ')}], masterCategory: ${masterCategoryFilter}, subCategory: ${subCategoryFilter}`, response.data);
+        console.log(`Fetched products with gender: ${genderFilter}, colors: [${color.join(', ')}], masterCat: ${masterCategoryFilter}, subCat: ${subCategoryFilter}, articleType: ${articleTypeFilter}`, response.data);
         console.log("Pagination meta:", response.meta);
       })
       .catch(error => {
@@ -78,7 +113,7 @@ const Collection = () => {
         setApiProductCollection([]);
         setPaginationMeta(null);
       });
-  }, [currentPage, category, color, selectedMasterCategory, selectedSubCategoryId]);
+  }, [currentPage, category, color, selectedMasterCategory, selectedSubCategoryId, selectedArticleTypeId]);
 
   const handleFilterChange = (value, filterType) => {
     switch (filterType) {
@@ -90,6 +125,9 @@ const Collection = () => {
         break;
       case 'subCategory':
         setSelectedSubCategoryId(prev => prev === value ? null : value);
+        break;
+      case 'articleType':
+        setSelectedArticleTypeId(prev => prev === value ? null : value);
         break;
       case 'color':
         const colorObject = allColorsFromProps.find(c => c.name === value);
@@ -121,6 +159,10 @@ const Collection = () => {
     if (selectedSubCategoryId) {
       // Logic for local filtering by selected subcategory ID
       // Example: filtered = filtered.filter(item => item.subCategoryId === parseInt(selectedSubCategoryId, 10));
+    }
+    if (selectedArticleTypeId) {
+      // Logic for local filtering by selected article type ID
+      // Example: filtered = filtered.filter(item => item.articleTypeId === parseInt(selectedArticleTypeId, 10));
     }
     if (color.length > 0) {
       // This local filter needs to map product color names/IDs to the selected IDs.
@@ -286,6 +328,62 @@ const Collection = () => {
                   )}
                 </>
               )}
+            </div>
+          )}
+
+          {/* ArticleType Filter - Conditional */}
+          {selectedSubCategoryId && (
+            <div className={`border border-gray-300 px-5 py-3 mt-3 ${showFilter ? '' : 'hidden'} sm:block`}>
+                <div className='flex justify-between items-center mb-3'>
+                    <p className='text-sm font-medium'>ARTICLE TYPE</p>
+                    {selectedArticleTypeId && (
+                        <button 
+                            onClick={() => setSelectedArticleTypeId(null)} 
+                            className='text-xs text-blue-600 hover:text-blue-800 font-medium mr-2'
+                        >
+                            Clear
+                        </button>
+                    )}
+                </div>
+                <input 
+                    type="text"
+                    placeholder="Search article types..."
+                    className="w-full p-2 border border-gray-300 rounded-md mb-3 text-sm"
+                    value={articleTypeSearchTerm}
+                    onChange={(e) => setArticleTypeSearchTerm(e.target.value)}
+                />
+                {isLoadingArticleTypes && <p className="text-sm text-gray-500">Loading article types...</p>}
+                {!isLoadingArticleTypes && articleTypeOptions.length === 0 && <p className="text-sm text-gray-500">No article types found for the selected subcategory.</p>}
+                {!isLoadingArticleTypes && articleTypeOptions.length > 0 && (
+                    <>
+                        <div className='flex flex-col gap-2 text-sm font-light text-gray-700 max-h-60 overflow-y-auto'>
+                        {articleTypeOptions
+                            .filter(at => at.name && at.name.toLowerCase().includes(articleTypeSearchTerm.toLowerCase()))
+                            .slice(0, showAllArticleTypes ? articleTypeOptions.length : 10)
+                            .map((at) => (
+                            <label key={at.id} className='flex gap-2 items-center'>
+                                <input 
+                                className='w-3 h-3' 
+                                type='radio' 
+                                name='articleType' // Group radio buttons
+                                value={at.id.toString()} 
+                                checked={selectedArticleTypeId === at.id.toString()}
+                                onChange={(e) => handleFilterChange(e.target.value, 'articleType')}
+                                />
+                                {at.name}
+                            </label>
+                            ))}
+                        </div>
+                        {articleTypeOptions.filter(at => at.name && at.name.toLowerCase().includes(articleTypeSearchTerm.toLowerCase())).length > 10 && (
+                        <button 
+                            onClick={() => setShowAllArticleTypes(!showAllArticleTypes)}
+                            className="text-sm text-blue-600 hover:text-blue-800 mt-2"
+                        >
+                            {showAllArticleTypes ? 'Show Less' : 'Show More'}
+                        </button>
+                        )}
+                    </>
+                )}
             </div>
           )}
 

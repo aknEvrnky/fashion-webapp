@@ -10,9 +10,10 @@ const API_URL = ''; // Base API URL, adjust if your API routes are prefixed diff
  * @param {number[]} colors - An array of color IDs to filter products by.
  * @param {number|null} masterCategoryId - The ID of the master category to filter by.
  * @param {number|null} subCategoryId - The ID of the subcategory to filter by.
+ * @param {number|null} articleTypeId - The ID of the article type to filter by.
  * @returns {Promise<Object>} A promise that resolves to the API response data.
  */
-export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = [], masterCategoryId = null, subCategoryId = null) => {
+export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = [], masterCategoryId = null, subCategoryId = null, articleTypeId = null) => {
     const params = {
         page: page,
         per_page: perPage
@@ -28,6 +29,9 @@ export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = []
     }
     if (subCategoryId !== null && subCategoryId !== '') {
         params.sub_category = subCategoryId; // Ensure this param name matches backend for single ID
+    }
+    if (articleTypeId !== null && articleTypeId !== '') {
+        params.article_type = articleTypeId; // Ensure this param name matches backend
     }
     return axios.get(`${API_URL}/products`, { params })
     .then(response => response.data) // Return only the data part of the response
@@ -57,9 +61,28 @@ export const fetchSubCategories = (masterCategoryId) => {
         });
 };
 
+/**
+ * Fetches article types for a given subcategory ID.
+ * @param {number|string} subCategoryId - The ID of the subcategory.
+ * @returns {Promise<Object>} A promise that resolves to the API response data (array of article types).
+ */
+export const fetchArticleTypes = (subCategoryId) => {
+    if (!subCategoryId) {
+        return Promise.reject(new Error('subCategoryId is required to fetch article types.'));
+    }
+    // Assuming the endpoint is /sub-categories/{id}/article-types relative to API_URL
+    return axios.get(`${API_URL}/sub-categories/${subCategoryId}/article-types`)
+        .then(response => response.data)
+        .catch(error => {
+            console.error(`Error fetching article types for subcategory ID ${subCategoryId}:`, error);
+            throw error;
+        });
+};
+
 const ProductService = {
     fetchProducts,
     fetchSubCategories,
+    fetchArticleTypes,
     // Other product-related API calls can be added here, e.g.:
     // fetchProductById: (id) => axios.get(`${API_URL}/products/${id}`).then(response => response.data),
     // createProduct: (productData) => axios.post(`${API_URL}/products`, productData).then(response => response.data),

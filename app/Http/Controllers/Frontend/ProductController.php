@@ -18,6 +18,7 @@ class ProductController extends Controller
         $colors = $request->get('colors', []);
         $masterCategory = $request->get('master_category', null);
         $subCategory = $request->get('sub_category', null);
+        $articleType = $request->get('article_type', null);
 
         $query = Product::query()
             ->when($gender, fn(Builder $query) => $query->where('gender', $gender))
@@ -25,7 +26,11 @@ class ProductController extends Controller
                 $query->whereIn('base_colours.id', $colors);
             }));
 
-        if ($subCategory) {
+        if ($articleType) {
+            $query = $query->whereHas('articleType', function (Builder $query) use ($articleType) {
+                $query->where('article_types.id', $articleType);
+            });
+        } else if ($subCategory) {
             $query = $query->whereHas('articleType.subCategory', function (Builder $query) use ($subCategory) {
                 $query->where('sub_categories.id', $subCategory);
             });

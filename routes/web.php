@@ -21,6 +21,7 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::get('/master-categories/{masterCategory}/sub-categories', [CategoryController::class, 'subCategories']);
+Route::get('/sub-categories/{subCategory}/article-types', [CategoryController::class, 'articleTypes']);
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
