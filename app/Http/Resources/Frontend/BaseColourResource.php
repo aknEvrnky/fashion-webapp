@@ -5,7 +5,7 @@ namespace App\Http\Resources\Frontend;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MasterCategoryResource extends JsonResource
+class BaseColourResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,6 @@ class MasterCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
         ];
     }
 }

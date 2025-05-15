@@ -3,10 +3,13 @@ import Title from '../components/Title';
 import NewsletterBox from '../components/NewsletterBox';
 import { assets } from '../assets/assets';
 import AppLayout from '../layouts/AppLayout';
+import {Head} from "@inertiajs/react";
 
 const Contact = () => {
   return (
     <AppLayout>
+      <Head title='Contact' />
+
       <div>
         <div className='text-center text-2xl pt-10 border-t'>
           <Title text1={'CONTACT'} text2={'US'} />

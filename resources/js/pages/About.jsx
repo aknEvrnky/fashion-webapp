@@ -2,10 +2,13 @@ import React from 'react';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import AppLayout from "@/Layouts/AppLayout.jsx";
+import {Head} from "@inertiajs/react";
 
 const About = () => {
   return (
     <AppLayout>
+      <Head title='About'/>
+
       <div className='text-2xl text-center pt-8 border-t'>
         <Title text1={'ABOUT'} text2={'US'} />
       </div>

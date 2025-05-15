@@ -13,7 +13,7 @@ export const Home = () => {
 
   return (
     <AppLayout>
-      <Head title='Fashion Tric - Home Page'/>
+      <Head title='Home Page'/>
 
         <Hero />
         <LatestCollection latestProducts={latestProducts} />

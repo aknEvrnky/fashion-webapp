@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
@@ -94,5 +95,13 @@ class Product extends Model
     {
         // todo: update here
         return false;
+    }
+
+    public function price(): Attribute
+    {
+        return Attribute::make(
+            get: fn(int $value): float => $value / 100,
+            set: fn(float $value): int => (int) ($value * 100),
+        );
     }
 }
