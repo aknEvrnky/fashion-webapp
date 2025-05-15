@@ -25,9 +25,4 @@ class SubCategory extends Model
     {
         return $this->hasMany(ArticleType::class);
     }
-
-    public function url(): string
-    {
-        return route('sub-categories.show', $this);
-    }
 }

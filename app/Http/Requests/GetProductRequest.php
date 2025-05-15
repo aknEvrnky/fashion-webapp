@@ -28,6 +28,7 @@ class GetProductRequest extends FormRequest
             'colors' => ['nullable', 'array'],
             'colors.*' => ['string', 'exists:base_colours,id'],
             'master_category' => ['nullable', 'string', 'exists:master_categories,id'],
+            'sub_category' => ['nullable', 'string', 'exists:sub_categories,id'],
         ];
     }
 }

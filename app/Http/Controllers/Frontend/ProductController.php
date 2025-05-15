@@ -17,17 +17,25 @@ class ProductController extends Controller
         $gender = $request->get('gender');
         $colors = $request->get('colors', []);
         $masterCategory = $request->get('master_category', null);
+        $subCategory = $request->get('sub_category', null);
 
-        $products = Product::query()
+        $query = Product::query()
             ->when($gender, fn(Builder $query) => $query->where('gender', $gender))
             ->when(count($colors), fn(Builder $query) => $query->whereHas('baseColour', function (Builder $query) use ($colors) {
                 $query->whereIn('base_colours.id', $colors);
-            }))
-            ->when($masterCategory, fn(Builder $query) => $query->whereHas('articleType.subCategory.masterCategory', function (Builder $query) use ($masterCategory) {
-                $query->where('master_categories.id', $masterCategory);
-            }))
-            ->paginate($request->get('per_page', 20));
+            }));
 
+        if ($subCategory) {
+            $query = $query->whereHas('articleType.subCategory', function (Builder $query) use ($subCategory) {
+                $query->where('sub_categories.id', $subCategory);
+            });
+        } else if ($masterCategory) {
+            $query = $query->whereHas('articleType.subCategory.masterCategory', function (Builder $query) use ($masterCategory) {
+                $query->where('master_categories.id', $masterCategory);
+            });
+        }
+
+        $products = $query->paginate($request->get('per_page', 20));
         return ProductResource::collection($products);
     }
 

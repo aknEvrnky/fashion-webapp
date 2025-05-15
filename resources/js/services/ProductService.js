@@ -9,9 +9,10 @@ const API_URL = ''; // Base API URL, adjust if your API routes are prefixed diff
  * @param {string|null} gender - The gender to filter products by.
  * @param {number[]} colors - An array of color IDs to filter products by.
  * @param {number|null} masterCategoryId - The ID of the master category to filter by.
+ * @param {number|null} subCategoryId - The ID of the subcategory to filter by.
  * @returns {Promise<Object>} A promise that resolves to the API response data.
  */
-export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = [], masterCategoryId = null) => {
+export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = [], masterCategoryId = null, subCategoryId = null) => {
     const params = {
         page: page,
         per_page: perPage
@@ -25,6 +26,9 @@ export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = []
     if (masterCategoryId !== null && masterCategoryId !== '') {
         params.master_category = masterCategoryId; // Ensure this param name matches backend
     }
+    if (subCategoryId !== null && subCategoryId !== '') {
+        params.sub_category = subCategoryId; // Ensure this param name matches backend for single ID
+    }
     return axios.get(`${API_URL}/products`, { params })
     .then(response => response.data) // Return only the data part of the response
     .catch(error => {
@@ -34,8 +38,28 @@ export const fetchProducts = (page = 1, perPage = 20, gender = null, colors = []
     });
 };
 
+/**
+ * Fetches subcategories for a given master category ID.
+ * @param {number|string} masterCategoryId - The ID of the master category.
+ * @returns {Promise<Object>} A promise that resolves to the API response data (array of subcategories).
+ */
+export const fetchSubCategories = (masterCategoryId) => {
+    if (!masterCategoryId) {
+        return Promise.reject(new Error('masterCategoryId is required to fetch subcategories.'));
+    }
+    // Assuming the endpoint is /master-categories/{id}/sub-categories relative to API_URL
+    // Adjust if your API_URL already includes parts of this or if the route is different.
+    return axios.get(`${API_URL}/master-categories/${masterCategoryId}/sub-categories`)
+        .then(response => response.data)
+        .catch(error => {
+            console.error(`Error fetching subcategories for master category ID ${masterCategoryId}:`, error);
+            throw error;
+        });
+};
+
 const ProductService = {
     fetchProducts,
+    fetchSubCategories,
     // Other product-related API calls can be added here, e.g.:
     // fetchProductById: (id) => axios.get(`${API_URL}/products/${id}`).then(response => response.data),
     // createProduct: (productData) => axios.post(`${API_URL}/products`, productData).then(response => response.data),
