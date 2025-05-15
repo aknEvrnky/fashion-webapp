@@ -1,9 +1,9 @@
 import React, {useEffect, useContext, useState} from 'react'
 import {ShopContext} from '../../context/ShopContext.jsx'
-import {assets} from '@/assets/assets.js'
 import ProductList from '../../components/ProductList.jsx'
 import AppLayout from '../../layouts/AppLayout.jsx'
 import {usePage} from "@inertiajs/react";
+import FeedbackService, { FeedbackType } from '../../services/FeedbackService';
 
 const Show = (props) => {
   const product = usePage().props.product.data
@@ -15,13 +15,43 @@ const Show = (props) => {
   const [image, setImage] = useState(null)
   const [imageList, setImageList] = useState([])
   const [size, setSize] = useState('')
+  // Optional: State to track if the user has liked/disliked this product in the current session
+  // const [feedbackStatus, setFeedbackStatus] = useState(null); 
 
   useEffect(() => {
-    setImage(product.imageUrl)
-    let images = [product.imageUrl]
-    setImageList(images)
+    if (product) {
+        setImage(product.imageUrl)
+        // Assuming product.images is an array of image objects { url: 'string' } or just strings
+        // For now, using only imageUrl as per previous logic. Adjust if product.images exists and is structured differently.
+        let images = [product.imageUrl]; 
+        if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+             // Example: images = [product.imageUrl, ...product.images.map(img => img.url)];
+             // Or if product.images are just strings: images = [product.imageUrl, ...product.images];
+        }
+        setImageList(images)
+    }
+  }, [product]); // Depend on the product object itself
 
-  }, [productId, products])
+  const handleFeedback = async (feedbackType) => {
+    if (!product || !product.id) return;
+
+    // Assuming you will add FeedbackType.DISLIKE to your FeedbackService.js
+    // For now, FeedbackType.LIKE is used. For DISLIKE, ensure it exists.
+    const typeToSend = feedbackType === 'like' ? FeedbackType.LIKE : FeedbackType.DISLIKE; // Placeholder for DISLIKE
+
+    try {
+      await FeedbackService.storeFeedback(typeToSend, product.id);
+      console.log(`Feedback ${typeToSend} sent for product ID: ${product.id}`);
+      // Optional: Update feedbackStatus state here
+      // setFeedbackStatus(feedbackType);
+    } catch (error) {
+      console.error(`Error sending ${typeToSend} feedback for product ID: ${product.id}`, error);
+    }
+  };
+
+  if (!product) {
+    return <AppLayout><div>Loading product details...</div></AppLayout>; // Or some other loading state
+  }
 
   return (
     <AppLayout>
@@ -40,28 +70,39 @@ const Show = (props) => {
                     src={item}
                     key={index}
                     className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer'
-                    alt=''
+                    alt={`Product thumbnail ${index + 1}`}
                   />
                 ))
               }
             </div>
 
             <div className='w-full sm:w-[80%]'>
-              <img className='w-full h-auto' src={image} alt=''/>
+              <img className='w-full h-auto' src={image} alt={product.title || 'Main product image'}/>
             </div>
           </div>
 
           {/* -----Product Info-------- */}
           <div className='flex-1'>
             <h1 className='font-medium text-2xl mt-2'>{product.title}</h1>
-            <div className='flex items-center gap-1 mt-2'>
-              <img src={assets.star_icon} alt="" className="w-3.5"/>
-              <img src={assets.star_icon} alt="" className="w-3.5"/>
-              <img src={assets.star_icon} alt="" className="w-3.5"/>
-              <img src={assets.star_icon} alt="" className="w-3.5"/>
-              <img src={assets.star_dull_icon} alt="" className="w-3.5"/>
-              <p className='p1-2'>(122)</p>
+            
+            {/* Like/Dislike Buttons - Replaces star rating */}
+            <div className="mt-4 flex space-x-4 items-center">
+              <button 
+                onClick={() => handleFeedback('like')} 
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition ease-in-out duration-150"
+                aria-label="Like this product"
+              >
+                Like 👍
+              </button>
+              <button 
+                onClick={() => handleFeedback('dislike')} 
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition ease-in-out duration-150"
+                aria-label="Dislike this product"
+              >
+                Dislike 👎
+              </button>
             </div>
+
             <p className='mt-5 text-3x1 font-medium'>{currency}{product.price}</p>
             <p className='mt-5 text-3x1'><b>Brand:</b> {product.brand.title}</p>
             <p className='mt-5 text-gray-500 md:w-4/5'>{product.description}</p>

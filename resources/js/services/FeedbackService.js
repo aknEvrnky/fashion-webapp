@@ -10,6 +10,7 @@ const API_URL = ''; // Adjust if your API routes are prefixed, e.g., '/api'
 export const FeedbackType = {
     PURCHASE: 'purchase',
     LIKE: 'like',
+    DISLIKE: 'dislike',
     VIEW: 'view',
     ADD_TO_CART: 'add_to_cart',
     ADD_TO_WISHLIST: 'add_to_wishlist',

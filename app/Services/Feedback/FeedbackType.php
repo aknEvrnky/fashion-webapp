@@ -14,6 +14,7 @@ enum FeedbackType: string
 {
     case PURCHASE = 'purchase';
     case LIKE = 'like';
+    case DISLIKE = 'dislike';
     case VIEW = 'view';
     case ADD_TO_CART = 'add_to_cart';
     case ADD_TO_WISHLIST = 'add_to_wishlist';
@@ -28,6 +29,7 @@ enum FeedbackType: string
             FeedbackType::ADD_TO_WISHLIST => FeedbackPositivity::POSITIVE,
             FeedbackType::VIEW => FeedbackPositivity::READ,
             FeedbackType::CLICK => FeedbackPositivity::READ,
+            FeedbackType::DISLIKE => FeedbackPositivity::READ,
         };
     }
 }
