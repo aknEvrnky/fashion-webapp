@@ -7,6 +7,7 @@ use App\Http\Requests\Feedback\StoreFeedbackRequest;
 use App\Services\Feedback\FeedbackService;
 use App\Services\Feedback\FeedbackType;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
@@ -23,11 +24,11 @@ class FeedbackController extends Controller
     {
         $data = $request->validated();
 
-        $userId = auth()->check() ? auth()->id() : $request->header('X-Recommender-Id');
+        $userId = Auth::check() ? Auth::id() : session()->get('recommender-id');
 
         if (!$userId) {
             throw ValidationException::withMessages([
-                'user_id' => 'You must be either logged in or provide `X-Recommender-Id` in the header.',
+                'user_id' => 'You must be either logged in.',
             ]);
         }
 

@@ -17,8 +17,8 @@ class BindUserRecommenderId
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            if (!$request->hasHeader('X-Recommender-Id')) {
-                $request->headers->set('X-Recommender-Id', Str::uuid()->toString());
+            if (session()->missing('recommender-id')) {
+                session()->put('recommender-id', Str::uuid()->toString());
             }
         }
 

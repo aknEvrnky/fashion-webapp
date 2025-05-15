@@ -4,6 +4,7 @@ use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\CategoryController;
 use App\Http\Controllers\Frontend\CollectionController;
 use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\Frontend\FeedbackController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\RecommendationController;
@@ -26,3 +27,5 @@ Route::get('/sub-categories/{subCategory}/article-types', [CategoryController::c
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 });
+
+Route::post('feedback', [FeedbackController::class, 'store']);
