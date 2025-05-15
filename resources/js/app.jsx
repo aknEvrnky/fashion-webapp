@@ -4,7 +4,8 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import ShopContextProvider from './context/ShopContext';
+import { ShopContextProvider } from './context/ShopContext.jsx';
+import AppLayout from './Layouts/AppLayout.jsx';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

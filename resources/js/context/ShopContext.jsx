@@ -1,115 +1,148 @@
-import { createContext, useState, useEffect } from "react"; // ✅ useState ve useEffect doğru import edildi
-import { products } from "../assets/assets";
-import { ToastContainer, toast } from 'react-toastify';
-import { router } from '@inertiajs/react'; // Import Inertia router
-// TODO: Remove this import - useNavigate from react-router-dom is not needed with Inertia.
-// import { useNavigate } from "react-router-dom"; // Commented out: Not needed with Inertia
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import CartService from '../services/CartService'; // Adjust path if necessary
+import { products as staticProducts } from "../assets/assets"; // Assuming this is a fallback or static list
+import { ToastContainer, toast } from 'react-toastify'; // Keep if used for other things
+import { router } from '@inertiajs/react'; 
 
-export const ShopContext = createContext();
+export const ShopContext = createContext(null);
 
-const ShopContextProvider = (props) => {
+export const ShopContextProvider = (props) => {
+    // State for the new API-driven cart
+    const [cartItems, setCartItems] = useState({}); // From API: { productId: itemDetails, ... }
+    const [itemCount, setItemCount] = useState(0);  // From API
+    const [totalAmount, setTotalAmount] = useState(0.0); // From API
+    const [isLoadingCart, setIsLoadingCart] = useState(true);
 
-    const currency = '$';
-    const delivery_fee = 10;
+    // Existing state from your previous context (if still needed)
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
-    const [cartItems, setCartItems] = useState({});
-    // TODO: Replace with Inertia navigation if context needs to trigger navigation. useNavigate from react-router-dom was removed.
-    // const navigate = useNavigate(); // Commented out: Not needed with Inertia. TODO: Replace with Inertia navigation if context needs to trigger navigation.
+    const currency = '$';
+    const delivery_fee = 10;
+    // `products` from your old context, might be a static list or fetched differently.
+    // If this is meant to be dynamic, it needs its own fetching logic.
+    const [products, setProducts] = useState(staticProducts); 
 
-    const addToCart = async (itemId, size) => {
-        
-        if (!size) {
-            toast.error('Select Product Size');
-            return;
+    // Helper to update cart state from API response
+    const updateCartStateFromResponse = (apiResponse) => {
+        setCartItems(apiResponse.cart || {});
+        setItemCount(apiResponse.count || 0);
+        setTotalAmount(apiResponse.total || 0.0);
+    };
+
+    // Fetch initial cart on mount
+    useEffect(() => {
+        setIsLoadingCart(true);
+        CartService.getCart()
+            .then(response => {
+                updateCartStateFromResponse(response); 
+            })
+            .catch(error => {
+                console.error("ShopContext: Failed to fetch initial cart", error);
+                updateCartStateFromResponse({ cart: {}, count: 0, total: 0.0 }); // Reset on error
+            })
+            .finally(() => {
+                setIsLoadingCart(false);
+            });
+    }, []);
+
+    // Cart modification functions using CartService
+    const addToCartAPI = async (productId, options = {}) => {
+        const { quantity = 1 } = options;
+
+        try {
+            setIsLoadingCart(true);
+            // The current CartService.addItem only takes productId and quantity.
+            const response = await CartService.addItem(productId, quantity);
+            updateCartStateFromResponse(response);
+            toast.success('Item added to cart!'); 
+        } catch (error) {
+            console.error("ShopContext: Failed to add item to cart", error);
+            toast.error(error.message || 'Failed to add item.'); // Display error message from service or a generic one
+        } finally {
+            setIsLoadingCart(false);
         }
+    };
 
-        let cartData = structuredClone(cartItems);
-
-        if (cartData[itemId]) {
-            if (cartData[itemId][size]) {
-                cartData[itemId][size] += 1;
-            } else {
-                cartData[itemId][size] = 1;
-            }
-        } else {
-            cartData[itemId] = {};  // ✅ Buradaki else bloğu doğru şekilde düzeltildi
-            cartData[itemId][size] = 1;
+    const removeFromCartAPI = async (productId) => {
+        try {
+            setIsLoadingCart(true);
+            const response = await CartService.removeItem(productId);
+            updateCartStateFromResponse(response);
+            toast.info('Item removed from cart.');
+        } catch (error) {
+            console.error("ShopContext: Failed to remove item from cart", error);
+            toast.error('Failed to remove item.');
+        } finally {
+            setIsLoadingCart(false);
         }
+    };
 
-        setCartItems(cartData); // ✅ setCartItems() içine veri verildi (önceden boş bırakılmıştı)
-    }
-
-    const getCartCount = () => {
-        let totalCount = 0;
-        for (const itemId in cartItems) {
-            for (const size in cartItems[itemId]) {
-                try {
-                    if (cartItems[itemId][size] > 0) {
-                        totalCount += cartItems[itemId][size]; 
-                        // ✅ BURASI DÜZELTİLDİ:
-                        // eskiden yanlışlıkla cartItems[items][items][item] yazılmıştı!
-                    }
-                } catch (error) {
-                    console.error(error);
-                }
-            }
+    const updateCartItemQuantityAPI = async (productId, quantity) => {
+        try {
+            setIsLoadingCart(true);
+            const response = await CartService.updateItem(productId, quantity);
+            updateCartStateFromResponse(response);
+            toast.success('Cart updated.');
+        } catch (error) {
+            console.error("ShopContext: Failed to update item quantity", error);
+            toast.error('Failed to update cart.');
+        } finally {
+            setIsLoadingCart(false);
         }
-        return totalCount;
-    }
+    };
 
-    const updateQuantity = async(itemId,size,quantity) => {
-
-        let cartData = structuredClone(cartItems);
-
-        cartData[itemId][size] = quantity;
-
-        setCartItems(cartData);
-
-    }
-
-    const getCartAmount =  () => {
-        let totalAmount = 0;
-        for(const items in cartItems){
-            let itemInfo = products.find((product)=> product._id === items);
-            for(const item in cartItems[items]){
-                try {
-                    if (cartItems[items][item] > 0) {
-                        totalAmount += itemInfo.price * cartItems[items][item];
-                        
-                    }
-                
-                } catch (error) {
-                    
-                }
-            }
+    const clearCartAPI = async () => {
+        try {
+            setIsLoadingCart(true);
+            const response = await CartService.clearCart();
+            updateCartStateFromResponse(response); 
+            toast.info('Cart cleared.');
+        } catch (error) {
+            console.error("ShopContext: Failed to clear cart", error);
+            toast.error('Failed to clear cart.');
+        } finally {
+            setIsLoadingCart(false);
         }
-        return totalAmount;
-    }
+    };
 
-    const value = {
-        products,
+    const contextValue = {
+        // New API-driven cart state and functions
+        cartItems,          // Object of items in cart from API
+        itemCount,          // Total item count from API
+        totalAmount,        // Total cart amount from API
+        isLoadingCart,
+        addToCart: addToCartAPI, // This now points to the updated function
+        removeFromCart: removeFromCartAPI,
+        updateCartItemQuantity: updateCartItemQuantityAPI,
+        clearCart: clearCartAPI,
+
+        // Existing context values (conditionally keep or refactor)
+        products,           // Your existing products state
         currency,
         delivery_fee,
         search,
         setSearch,
         showSearch,
         setShowSearch,
-        cartItems,
-        addToCart,
-        getCartCount,
-        updateQuantity,
-        getCartAmount,
-        router // Provide Inertia router via context
+        router,             // Inertia router
+        // If you still need the old local cart logic for some reason, they can be added back,
+        // but it's recommended to rely on the API-driven state (itemCount, totalAmount).
+        // getCartCount: () => itemCount, // Example: if you want to keep the same function name
+        // getCartAmount: () => totalAmount,
     };
 
-    // TODO: Ensure all functions within ShopContext that previously used navigate (from react-router-dom) are updated or marked with specific TODOs for Inertia navigation.
-
     return (
-        <ShopContext.Provider value={value}>
+        <ShopContext.Provider value={contextValue}>
             {props.children}
+            <ToastContainer /> {/* Ensure ToastContainer is rendered for notifications */}
         </ShopContext.Provider>
-    )
-}
+    );
+};
 
-export default ShopContextProvider;
+export const useShopContext = () => {
+    const context = useContext(ShopContext);
+    if (context === undefined) {
+        throw new Error('useShopContext must be used within a ShopContextProvider');
+    }
+    return context;
+};

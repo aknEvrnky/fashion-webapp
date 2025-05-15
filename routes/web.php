@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CategoryController;
 use App\Http\Controllers\Frontend\CollectionController;
 use App\Http\Controllers\Frontend\ContactController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\RecommendationController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', HomeController::class)->name('home');
 
@@ -24,8 +24,13 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::get('/master-categories/{masterCategory}/sub-categories', [CategoryController::class, 'subCategories']);
 Route::get('/sub-categories/{subCategory}/article-types', [CategoryController::class, 'articleTypes']);
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
-});
-
 Route::post('feedback', [FeedbackController::class, 'store']);
+
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::get('/basket', [CartController::class, 'basket'])->name('cart.basket');
+    Route::post('/', [CartController::class, 'store'])->name('cart.store');
+    Route::put('/{productId}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/{productId}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear');
+});

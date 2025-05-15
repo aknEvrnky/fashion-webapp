@@ -4,6 +4,7 @@ import ProductList from '../../components/ProductList.jsx'
 import AppLayout from '../../layouts/AppLayout.jsx'
 import {usePage} from "@inertiajs/react";
 import FeedbackService, { FeedbackType } from '../../services/FeedbackService';
+import { useShopContext } from '../../context/ShopContext.jsx'; // Import the custom hook
 
 const Show = (props) => {
   const product = usePage().props.product.data
@@ -11,10 +12,12 @@ const Show = (props) => {
   // const userBasedProducts = usePage().props.userBasedProducts.data
 
   const {productId} = props
-  const {products, currency, addToCart} = useContext(ShopContext)
+  // Use the custom hook for ShopContext
+  const { currency, addToCart, // Other values you might need from context like products 
+        } = useShopContext(); 
   const [image, setImage] = useState(null)
   const [imageList, setImageList] = useState([])
-  const [size, setSize] = useState('')
+  // const [size, setSize] = useState('') // Removed size state
   // Optional: State to track if the user has liked/disliked this product in the current session
   // const [feedbackStatus, setFeedbackStatus] = useState(null); 
 
@@ -47,6 +50,13 @@ const Show = (props) => {
     } catch (error) {
       console.error(`Error sending ${typeToSend} feedback for product ID: ${product.id}`, error);
     }
+  };
+
+  const handleAddToCart = () => {
+    // The addToCart from context now expects (productId, options)
+    // options can include { quantity }
+    addToCart(product.id, { quantity: 1 }); // Removed size from options
+    // Defaulting quantity to 1, you can add a quantity selector if needed
   };
 
   if (!product) {
@@ -107,17 +117,21 @@ const Show = (props) => {
             <p className='mt-5 text-3x1'><b>Brand:</b> {product.brand.title}</p>
             <p className='mt-5 text-gray-500 md:w-4/5'>{product.description}</p>
             <div className='flex flex-col gap-4 my-8'>
+              {/* Removed Size Selection UI */}
+              {/* 
               <p>Select Size</p>
               <div className='flex gap-2'>
-                {[].map((item, index) => (
-                  <button onClick={() => setSize(item)}
-                          className={`border py-2  px-4 bg-gray-100 ${item === size ? 'border-orange-500' : ''}`}
-                          key={index}>{item}</button>
+                {(product.availableSizes || ['S', 'M', 'L', 'XL']).map((availableSize, index) => (
+                  <button onClick={() => setSize(availableSize)}
+                          className={`border py-2 px-4 ${availableSize === size ? 'bg-orange-500 text-white border-orange-500' : 'bg-gray-100 hover:bg-gray-200'}`}
+                          key={index}>{availableSize}
+                  </button>
                 ))}
-
               </div>
-              <button onClick={() => addToCart(product.id, size)}
-                      className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART
+              */}
+              <button onClick={handleAddToCart} // Updated to call handleAddToCart
+                      className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700' // Removed disabled={!size}
+              >ADD TO CART
               </button>
               <hr className='mt-8 sm:w-4/5'/>
               <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
