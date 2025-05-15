@@ -48,14 +48,15 @@ class ProductController extends Controller
     public function show(Request $request, Product $product, RecommenderService $recommenderService)
     {
         $product->loadMissing('brand');
-        $product = new ProductResource($product);
 
         $userId = $request->user()?->id;
         $similarProducts = $recommenderService->similarProducts($product->id, 5);
+        $recommendedProducts = $recommenderService->recommendedProductsForCategory($userId, $product->articleType->name, 5);
 
         return Inertia::render('Product/Show', [
-            'product' => $product,
+            'product' => new ProductResource($product),
             'similarProducts' => ProductResource::collection($similarProducts),
+            'recommendedProducts' => ProductResource::collection($recommendedProducts),
         ]);
     }
 }

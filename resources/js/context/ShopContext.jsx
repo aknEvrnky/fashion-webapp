@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import CartService from '../services/CartService'; // Adjust path if necessary
+import FeedbackService from '../services/FeedbackService'; // Import FeedbackService
 import { products as staticProducts } from "../assets/assets"; // Assuming this is a fallback or static list
 import { ToastContainer, toast } from 'react-toastify'; // Keep if used for other things
 import { router } from '@inertiajs/react'; 
@@ -51,10 +52,19 @@ export const ShopContextProvider = (props) => {
 
         try {
             setIsLoadingCart(true);
-            // The current CartService.addItem only takes productId and quantity.
             const response = await CartService.addItem(productId, quantity);
             updateCartStateFromResponse(response);
-            toast.success('Item added to cart!'); 
+            toast.success('Item added to cart!');
+
+            // Send feedback after successful cart addition
+            try {
+                await FeedbackService.storeFeedback(FeedbackService.FeedbackType.ADD_TO_CART, productId, `Added to cart: quantity ${quantity}`);
+                console.log('ShopContext: ADD_TO_CART feedback sent for product', productId);
+            } catch (feedbackError) {
+                console.error("ShopContext: Failed to send ADD_TO_CART feedback", feedbackError);
+                // Optionally notify user or handle silently
+            }
+
         } catch (error) {
             console.error("ShopContext: Failed to add item to cart", error);
             toast.error(error.message || 'Failed to add item.'); // Display error message from service or a generic one

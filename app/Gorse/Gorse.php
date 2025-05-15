@@ -69,9 +69,17 @@ class Gorse
     /**
      * @throws GuzzleException
      */
-    function getRecommend(string $user_id): array
+    public function getRecommend(string $user_id): array
     {
         $response = $this->client->get('/api/recommend/' . $user_id);
+        return $response->json();
+    }
+
+    public function getRecommendationsForCategory(string $userId, string $category, int $n = 5): array
+    {
+        $response = $this->client->get('/api/recommend/' . $userId . '/' . $category, [
+            'n' => $n,
+        ]);
         return $response->json();
     }
 

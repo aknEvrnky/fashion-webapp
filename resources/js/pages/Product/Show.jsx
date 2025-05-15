@@ -9,7 +9,7 @@ import { useShopContext } from '../../context/ShopContext.jsx'; // Import the cu
 const Show = (props) => {
   const product = usePage().props.product.data
   const similarProducts = usePage().props.similarProducts.data
-  // const userBasedProducts = usePage().props.userBasedProducts.data
+  const recommendedProducts = usePage().props.recommendedProducts.data
 
   const {productId} = props
   // Use the custom hook for ShopContext
@@ -157,7 +157,7 @@ const Show = (props) => {
 
         <ProductList products={similarProducts} />
 
-        <ProductList products={similarProducts} />
+        <ProductList title='Personalized' products={recommendedProducts} />
       </div>
     </AppLayout>
   )
