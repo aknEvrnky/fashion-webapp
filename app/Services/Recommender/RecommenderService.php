@@ -79,4 +79,14 @@ class RecommenderService
 
         return Product::query()->whereIn('id', $productIds)->get();
     }
+
+    public function similarProducts(string $productId, int $limit = 5): Collection
+    {
+        $products = $this->client->productNeighbors($productId, $limit);
+
+        $productIds = collect($products)->pluck('Id');
+
+        return Product::query()->whereIn('id', $productIds)->get();
+
+    }
 }

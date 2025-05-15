@@ -26,6 +26,7 @@ class ProductResource extends JsonResource
             'imageUrl' => $this->imageUrl(),
             'baseColour' => $this->baseColour->name,
             'usage' => $this->usage->name,
+            'brand' => $this->whenLoaded('brand'),
         ];
     }
 }

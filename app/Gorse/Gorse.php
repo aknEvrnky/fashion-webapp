@@ -153,4 +153,17 @@ class Gorse
 
         return $this->client->get('/api/popular/'. $category, $query)->json();
     }
+
+    /**
+     * @return array<array{Id: string, Result: integer}>
+     * @throws GuzzleException
+     */
+    public function productNeighbors(string $productId, int $n = 5): array
+    {
+        $query = [
+            'n' => $n,
+        ];
+
+        return $this->client->get('/api/item/'. $productId . '/neighbors', $query)->json();
+    }
 }

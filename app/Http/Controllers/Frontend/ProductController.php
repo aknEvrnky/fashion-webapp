@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GetProductRequest;
 use App\Http\Resources\Frontend\ProductResource;
 use App\Models\Product;
+use App\Services\Recommender\RecommenderService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -44,8 +45,17 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    public function show(Request $request)
+    public function show(Request $request, Product $product, RecommenderService $recommenderService)
     {
-        return Inertia::render('Product/Show');
+        $product->loadMissing('brand');
+        $product = new ProductResource($product);
+
+        $userId = $request->user()?->id;
+        $similarProducts = $recommenderService->similarProducts($product->id, 5);
+
+        return Inertia::render('Product/Show', [
+            'product' => $product,
+            'similarProducts' => ProductResource::collection($similarProducts),
+        ]);
     }
 }
