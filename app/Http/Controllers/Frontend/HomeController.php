@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Frontend\MasterCategoryResource;
 use App\Http\Resources\Frontend\ProductResource;
-use App\Models\MasterCategory;
 use App\Services\Recommender\RecommenderService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
