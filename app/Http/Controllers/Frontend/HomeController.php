@@ -17,17 +17,16 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request, RecommenderService $recommenderService)
     {
-        $userId = $request->user()?->id;
+        $userId = $request->user()?->id ?? session()->get('recommender-id');
 
+        // Get the latest products from Gorse
         $latestProducts = $recommenderService->latestProducts(10, $userId);
         $popularProducts = $recommenderService->popularProducts(5, $userId);
 
         $latestProducts = ProductResource::collection($latestProducts);
         $popularProducts = ProductResource::collection($popularProducts);
-        $masterCategories = MasterCategoryResource::collection(MasterCategory::query()->get());
 
-        // Get the latest products from Gorse
 
-        return Inertia::render('Home', compact('masterCategories', 'latestProducts', 'popularProducts'));
+        return Inertia::render('Home', compact( 'latestProducts', 'popularProducts'));
     }
 }

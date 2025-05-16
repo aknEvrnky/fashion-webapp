@@ -99,7 +99,7 @@ class Gorse
      * @return array<array{Id: string, Result: integer}>
      * @throws GuzzleException
      */
-    public function latestProducts(int $n = 10, ?int $userId = null): array
+    public function latestProducts(int $n = 10, ?string $userId = null): array
     {
         $query = [
             'n' => $n,
@@ -115,7 +115,7 @@ class Gorse
      * @return array<array{Id: string, Result: integer}>
      * @throws GuzzleException
      */
-    public function latestProductsByCategory(string $category, int $n = 10, ?int $userId = null): array
+    public function latestProductsByCategory(string $category, int $n = 10, ?string $userId = null): array
     {
         $query = [
             'n' => $n,
@@ -132,7 +132,7 @@ class Gorse
      * @return array<array{Id: string, Result: integer}>
      * @throws GuzzleException
      */
-    public function popularProducts(int $n = 5, ?int $userId = null): array
+    public function popularProducts(int $n = 5, ?string $userId = null): array
     {
         $query = [
             'n' => $n,
@@ -149,7 +149,7 @@ class Gorse
      * @return array<array{Id: string, Result: integer}>
      * @throws GuzzleException
      */
-    public function popularProductsByCategory(string $category, int $n = 5, ?int $userId = null): array
+    public function popularProductsByCategory(string $category, int $n = 5, ?string $userId = null): array
     {
         $query = [
             'n' => $n,
