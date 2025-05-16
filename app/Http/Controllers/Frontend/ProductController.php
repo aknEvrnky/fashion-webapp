@@ -49,7 +49,8 @@ class ProductController extends Controller
     {
         $product->loadMissing('brand');
 
-        $userId = $request->user()?->id;
+        $userId = $request->user()?->id ?? session()->get('recommender-id');
+
         $similarProducts = $recommenderService->similarProducts($product->id, 5);
         $recommendedProducts = $recommenderService->recommendedProductsForCategory($userId, $product->articleType->name, 5);
 

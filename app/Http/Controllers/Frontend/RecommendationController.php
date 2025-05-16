@@ -15,7 +15,7 @@ class RecommendationController extends Controller
      */
     public function __invoke(Request $request, RecommenderService $recommenderService)
     {
-        $userId = $request->user()?->id;
+        $userId = $request->user()?->id ?? session()->get('recommender-id');
 
         $tshirtRecommendations = $recommenderService->popularProducts(5, $userId, 'Tshirts');
         $jacketRecommendations = $recommenderService->popularProducts(5, $userId, 'Jackets');

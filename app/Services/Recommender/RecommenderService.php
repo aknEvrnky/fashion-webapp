@@ -92,9 +92,7 @@ class RecommenderService
 
     public function recommendedProductsForCategory(string $userId, string $category, int $limit = 5): Collection
     {
-        $products = $this->client->getRecommendationsForCategory($userId, $category, $limit);
-
-        $productIds = collect($products)->pluck('Id');
+        $productIds = $this->client->getRecommendationsForCategory($userId, $category, $limit);
 
         return Product::query()->whereIn('id', $productIds)->get();
     }

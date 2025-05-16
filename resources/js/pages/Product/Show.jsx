@@ -2,7 +2,7 @@ import React, {useEffect, useContext, useState} from 'react'
 import {ShopContext} from '../../context/ShopContext.jsx'
 import ProductList from '../../components/ProductList.jsx'
 import AppLayout from '../../layouts/AppLayout.jsx'
-import {usePage} from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 import FeedbackService, { FeedbackType } from '../../services/FeedbackService';
 import { useShopContext } from '../../context/ShopContext.jsx'; // Import the custom hook
 
@@ -13,20 +13,20 @@ const Show = (props) => {
 
   const {productId} = props
   // Use the custom hook for ShopContext
-  const { currency, addToCart, // Other values you might need from context like products 
-        } = useShopContext(); 
+  const { currency, addToCart, // Other values you might need from context like products
+        } = useShopContext();
   const [image, setImage] = useState(null)
   const [imageList, setImageList] = useState([])
   // const [size, setSize] = useState('') // Removed size state
   // Optional: State to track if the user has liked/disliked this product in the current session
-  // const [feedbackStatus, setFeedbackStatus] = useState(null); 
+  // const [feedbackStatus, setFeedbackStatus] = useState(null);
 
   useEffect(() => {
     if (product) {
         setImage(product.imageUrl)
         // Assuming product.images is an array of image objects { url: 'string' } or just strings
         // For now, using only imageUrl as per previous logic. Adjust if product.images exists and is structured differently.
-        let images = [product.imageUrl]; 
+        let images = [product.imageUrl];
         if (product.images && Array.isArray(product.images) && product.images.length > 0) {
              // Example: images = [product.imageUrl, ...product.images.map(img => img.url)];
              // Or if product.images are just strings: images = [product.imageUrl, ...product.images];
@@ -65,6 +65,7 @@ const Show = (props) => {
 
   return (
     <AppLayout>
+      <Head title={product.title} />
       <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
         {/* --------Product Data---------- */}
         <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
@@ -94,18 +95,18 @@ const Show = (props) => {
           {/* -----Product Info-------- */}
           <div className='flex-1'>
             <h1 className='font-medium text-2xl mt-2'>{product.title}</h1>
-            
+
             {/* Like/Dislike Buttons - Replaces star rating */}
             <div className="mt-4 flex space-x-4 items-center">
-              <button 
-                onClick={() => handleFeedback('like')} 
+              <button
+                onClick={() => handleFeedback('like')}
                 className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition ease-in-out duration-150"
                 aria-label="Like this product"
               >
                 Like 👍
               </button>
-              <button 
-                onClick={() => handleFeedback('dislike')} 
+              <button
+                onClick={() => handleFeedback('dislike')}
                 className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition ease-in-out duration-150"
                 aria-label="Dislike this product"
               >
@@ -117,18 +118,6 @@ const Show = (props) => {
             <p className='mt-5 text-3x1'><b>Brand:</b> {product.brand.title}</p>
             <p className='mt-5 text-gray-500 md:w-4/5'>{product.description}</p>
             <div className='flex flex-col gap-4 my-8'>
-              {/* Removed Size Selection UI */}
-              {/* 
-              <p>Select Size</p>
-              <div className='flex gap-2'>
-                {(product.availableSizes || ['S', 'M', 'L', 'XL']).map((availableSize, index) => (
-                  <button onClick={() => setSize(availableSize)}
-                          className={`border py-2 px-4 ${availableSize === size ? 'bg-orange-500 text-white border-orange-500' : 'bg-gray-100 hover:bg-gray-200'}`}
-                          key={index}>{availableSize}
-                  </button>
-                ))}
-              </div>
-              */}
               <button onClick={handleAddToCart} // Updated to call handleAddToCart
                       className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700' // Removed disabled={!size}
               >ADD TO CART
