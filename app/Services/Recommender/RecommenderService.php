@@ -54,7 +54,7 @@ class RecommenderService
      * @return Collection<Product>
      * @throws GuzzleException
      */
-    public function latestProducts(int $limit, ?int $userId = null, ?string $category = null): Collection
+    public function latestProducts(int $limit, ?string $userId = null, ?string $category = null): Collection
     {
         $products = $category
             ? $this->client->latestProductsByCategory($category, $limit, $userId)
@@ -69,7 +69,7 @@ class RecommenderService
      * @return Collection<Product>
      * @throws GuzzleException
      */
-    public function popularProducts(int $limit, ?int $userId = null, ?string $category = null): Collection
+    public function popularProducts(int $limit, ?string $userId = null, ?string $category = null): Collection
     {
         $products = $category
             ? $this->client->popularProductsByCategory($category, $limit, $userId)
