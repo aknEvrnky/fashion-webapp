@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\UniqueSluggifier;
 use App\Enums\Gender;
 use App\Enums\Season;
+use App\Events;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,12 @@ class Product extends Model
     protected $with = [
         'baseColour',
         'usage'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => Events\ProductCreated::class,
+        'updated' => Events\ProductUpdated::class,
+        'deleted' => Events\ProductDeleted::class,
     ];
 
     protected function casts(): array
