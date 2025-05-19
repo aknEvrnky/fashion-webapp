@@ -23,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('viewApiDocs', function ($user = null) {
             return true;
         });
+
+        \URL::forceHttps();
     }
 }
