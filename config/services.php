@@ -40,6 +40,11 @@ return [
         'api_key' => env('GORSE_API_KEY', ''),
     ],
 
+    'cnn' => [
+        'host' => env('CNN_HOST', 'http://localhost:8080'),
+        'api_key' => env('CNN_API_KEY', ''),
+    ],
+
     'scramble' => [
         'basic_auth_user' => env('SCRAMBLE_BASIC_AUTH_USER'),
         'basic_auth_password' => env('SCRAMBLE_BASIC_AUTH_PASSWORD'),
