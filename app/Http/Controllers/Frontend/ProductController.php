@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GetProductRequest;
 use App\Http\Resources\Frontend\ProductResource;
 use App\Models\Product;
+use App\Services\Cnn\CnnService;
 use App\Services\Recommender\RecommenderService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -13,6 +14,13 @@ use Inertia\Inertia;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly RecommenderService $recommenderService,
+        private readonly CnnService $cnnService,
+
+    ) {
+    }
+
     public function index(GetProductRequest $request)
     {
         $gender = $request->get('gender');
@@ -45,19 +53,21 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    public function show(Request $request, Product $product, RecommenderService $recommenderService)
+    public function show(Request $request, Product $product)
     {
         $product->loadMissing('brand');
 
         $userId = $request->user()?->id ?? session()->get('recommender-id');
 
-        $similarProducts = $recommenderService->similarProducts($product->id, 5);
-        $recommendedProducts = $recommenderService->recommendedProductsForCategory($userId, $product->articleType->name, 5);
+        $similarProducts = $this->recommenderService->similarProducts($product->id, 5);
+        $recommendedProducts = $this->recommenderService->recommendedProductsForCategory($userId, $product->articleType->name, 5);
+        $cnnProducts = $this->cnnService->getSimilarProducts($product->id, 5);
 
         return Inertia::render('Product/Show', [
             'product' => new ProductResource($product),
             'similarProducts' => ProductResource::collection($similarProducts),
             'recommendedProducts' => ProductResource::collection($recommendedProducts),
+            'cnnProducts' => ProductResource::collection($cnnProducts),
         ]);
     }
 }

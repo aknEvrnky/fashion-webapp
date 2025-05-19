@@ -10,6 +10,7 @@ const Show = (props) => {
   const product = usePage().props.product.data
   const similarProducts = usePage().props.similarProducts.data
   const recommendedProducts = usePage().props.recommendedProducts.data
+  const cnnProducts = usePage().props.cnnProducts.data
 
   const {productId} = props
   // Use the custom hook for ShopContext
@@ -147,6 +148,8 @@ const Show = (props) => {
         <ProductList products={similarProducts} />
 
         <ProductList title='Personalized' products={recommendedProducts} />
+
+        <ProductList title='Similar' products={cnnProducts} />
       </div>
     </AppLayout>
   )
