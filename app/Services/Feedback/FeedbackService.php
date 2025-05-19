@@ -18,7 +18,7 @@ class FeedbackService
         $this->connection = Redis::connection('feedbacks');
     }
 
-    public function feed(int $userId, FeedbackType $feedbackType, string $productId, ?Carbon $datetime = null, ?string $comment = null): void
+    public function feed(string $userId, FeedbackType $feedbackType, string $productId, ?Carbon $datetime = null, ?string $comment = null): void
     {
         $datetime = $datetime ?? Carbon::now();
 
