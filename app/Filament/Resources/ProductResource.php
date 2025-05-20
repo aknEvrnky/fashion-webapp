@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Cnn\CnnClient;
 use App\Enums\Gender;
 use App\Enums\Season;
 use App\Filament\Resources\ProductResource\Pages;
@@ -15,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\Action;
 
 class ProductResource extends Resource
 {
@@ -179,6 +181,17 @@ class ProductResource extends Resource
                 Tables\Filters\SelectFilter::make('season')
                     ->options(Season::class),
 
+            ])
+            ->headerActions([
+                Action::make('generateEmbeddings')
+                    ->label('Generate Embeddings')
+                    ->action(function (CnnClient $cnnClient) {
+                        $cnnClient->startEmbedGenerating();
+                    })
+                    ->color('success')
+                    ->icon('heroicon-o-cube-transparent')
+                    ->requiresConfirmation()
+                    ->modalHeading('Generate Embeddings'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
